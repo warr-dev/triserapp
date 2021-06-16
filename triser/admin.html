@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="css/onsenui.css">
+  <link rel="stylesheet" href="css/onsen-css-components.min.css">
+  <script src="js/onsenui.min.js"></script>
+<script src="js/jquery-1.11.1.min.js"></script>
+
+<script>
+    const storage = window.localStorage;
+    let server=storage.getItem("server") || "http://localhost:8000"
+</script>
+</head>
+<body>
+     
+<ons-modal direction="up" id="loader">
+    <div style="text-align: center">
+      <p>
+        <ons-icon icon="md-spinner" size="28px" spin></ons-icon> Loading...
+      </p>
+    </div>
+  </ons-modal>
+    <ons-navigator id="appNavigator" swipeable swipe-target-width="80px">
+        <ons-page>
+          <ons-splitter id="appSplitter">
+            <ons-splitter-side id="sidemenu" page="sidemenu.html" swipeable side="left" collapse="" width="260px"></ons-splitter-side>
+            <ons-splitter-content page="tabbar.html"></ons-splitter-content>
+          </ons-splitter>
+        </ons-page>
+      </ons-navigator>
+      
+      <template id="tabbar.html">
+        <ons-page id="tabbar-page">
+          <ons-toolbar class="header">
+            <div class="center text-white">Home</div>
+            <div class="left">
+              <ons-toolbar-button class="text-white" onclick="fn.toggleMenu()">
+                <ons-icon icon="ion-ios-menu, material:md-menu"></ons-icon>
+              </ons-toolbar-button>
+            </div>
+          </ons-toolbar>
+          <ons-tabbar swipeable id="appTabbar" position="bottom" modifier="material">
+            <ons-tab label="Transactions" icon="ion-ios-home" page="home.html" active></ons-tab>
+            <ons-tab label="Add Driver" icon="ion-ios-create" page="adddriver.html"></ons-tab>
+            <ons-tab label="Drivers" icon="ion-ios-film" page="drivers.html"></ons-tab>
+          </ons-tabbar>
+      
+          <script>
+            ons.getScriptPage().addEventListener('prechange', function(event) {
+              if (event.target.matches('#appTabbar')) {
+                event.currentTarget.querySelector('ons-toolbar .center').innerHTML = event.tabItem.getAttribute('label');
+              }
+            });
+          </script>
+        </ons-page>
+      </template>
+      
+      <template id="sidemenu.html">
+        <ons-page>
+          <div class="profile-pic">
+            <h1 class="logo">Tri-Ser</h1>
+          </div>
+       
+      
+          <ons-list-title>Access</ons-list-title>
+          <ons-list>
+            <ons-list-item onclick="fn.loadView(0)">
+              <div class="left">
+                <ons-icon fixed-width class="list-item__icon" icon="ion-ios-home, material:md-home"></ons-icon>
+              </div>
+              <div class="center">
+                Transactions
+              </div>
+            </ons-list-item>
+            <ons-list-item onclick="fn.loadView(1)">
+              <div class="left">
+                <ons-icon fixed-width class="list-item__icon" icon="ion-ios-create, material:md-edit"></ons-icon>
+              </div>
+              <div class="center">
+                Add Driver
+              </div>
+            </ons-list-item>
+            <ons-list-item onclick="fn.loadView(2)">
+              <div class="left">
+                <ons-icon fixed-width class="list-item__icon" icon="ion-ios-film, material: md-movie-alt"></ons-icon>
+              </div>
+              <div class="center">
+                Drivers
+              </div>
+            </ons-list-item>
+          </ons-list>
+      
+          <ons-list-title style="margin-top: 10px">Account</ons-list-title>
+          <ons-list>
+            <ons-list-item onclick="logout()">
+              <div class="left">
+                <ons-icon fixed-width class="list-item__icon" icon="ion-logo-twitter"></ons-icon>
+              </div>
+              <div class="center">
+                Logout
+              </div>
+            </ons-list-item>
+          </ons-list>
+      
+          <script>
+            ons.getScriptPage().onInit = function() {
+              // Set ons-splitter-side animation
+              this.parentElement.setAttribute('animation', ons.platform.isAndroid() ? 'overlay' : 'reveal');
+            };
+            const logout=()=>{
+                storage.removeItem("token") // Pass a key name to remove that key from storage.
+                storage.removeItem("userid") // Pass a key name to remove that key from storage.
+                checksession();
+                toast('logout successful')
+            }
+          </script>
+      
+          <style>
+            .profile-pic {
+              width: 200px;
+              background-color: #fff;
+              margin: 20px auto 10px;
+              border: 1px solid #999;
+              border-radius: 4px;
+            }
+      
+            .profile-pic > img {
+              display: block;
+              max-width: 100%;
+            }
+      
+            ons-list-item {
+              color: #444;
+            }
+
+          </style>
+        </ons-page>
+      </template>
+      
+      <template id="home.html">
+        <ons-page>
+                     
+    <div class="content">
+      <center>
+        <div class="table-cont">
+          <table>
+           <thead>
+             <tr>
+               <th>Pickup Point</th>
+               <th>Destination Point</th>
+               <th>Passenger Count</th>
+               <th>Date</th>
+               <th data-priority="4">Status</th>
+             </tr>
+           </thead>
+           <tbody id="tabletransaction">
+           </tbody>
+         </table>
+        </div>
+          
+      </center>
+    </div>
+      </ons-page>
+    </template>
+          
+    <template id="conf.html">
+      <ons-page>
+              
+  <div class="content">
+        
+        </ons-page>
+      </template>
+      
+      
+      <template id="transition.html">
+        <ons-page>
+          <ons-toolbar>
+            <div class="left">
+              <ons-back-button>Animations</ons-back-button>
+            </div>
+            <div class="center"></div>
+          </ons-toolbar>
+          <p style="text-align: center">
+            Use the VOnsBackButton
+          </p>
+          <script>
+            ons.getScriptPage().onInit = function () {
+              this.querySelector('ons-toolbar div.center').textContent = this.data.title;
+            }
+          </script>
+        </ons-page>
+      </template>
+           
+      <template id="drivers.html">
+        <ons-page>
+                
+	    <div class="content">
+            <center>
+              <div class="table-cont">
+                <table>
+                   <thead>
+                     <tr>
+                       <th>Name</th>
+                       <th>License</th>
+                       <th>Plate_no</th>
+                       <th>Contact Number</th>
+                     </tr>
+                   </thead>
+                   <tbody id="tabledriver">
+                   </tbody>
+                 </table>
+
+              </div>
+            </center>
+        </div><!-- /content -->
+        </ons-page>
+      </template>
+           
+      <template id="adddriver.html">
+        <ons-page>
+          <form id="frmadddriver">
+                <div style="text-align: center; margin-top: 100px">
+                    <h3>Add Driver</h3>
+                    
+                    <p>
+                    <ons-input
+                    class="inp" name="name" placeholder="Full Name" modifier="underbar"></ons-input>
+                    </p>
+                    <p>
+                    <ons-input
+                    class="inp" name="license" placeholder="License" modifier="underbar"></ons-input>
+                    </p>
+                    <p>
+                    <ons-input
+                    class="inp" name="plate_no" placeholder="Plate Number" modifier="underbar"></ons-input>
+                    </p>
+                    <p>
+                    <ons-input
+                    class="inp" name="cpnum" placeholder="Cellphone Number" modifier="underbar"></ons-input>
+                    </p>
+                
+                
+                    <p>
+                    <ons-button
+                    class="inp but" onclick="adddriver()">Add Driver</ons-button>
+                    </p>
+                </div>
+            </form>
+        
+        </ons-page>
+      </template>
+        
+      
+      <template id="register.html">
+        <ons-page>
+          <ons-toolbar class="header">
+            <div class="left">
+              <ons-button onclick="back()">Login</ons-button>
+            </div>
+            
+            <div class="center"></div>
+          </ons-toolbar>
+                <div style="text-align: center; margin-top: 100px">                    <h1 class="logo">Tri-Ser</h1>
+
+                    <h3 onclick="fn.pushPage({'id': 'conf.html', 'title': 'Configuration'})">Registration</h3>
+                    <form id="frmregister">
+                        <p>
+                            <ons-input
+                            class="inp"
+                            name="cpnum"
+                                id="rcpnum"
+                                placeholder="Contact Number"
+                                type="text"
+                                modifier="underbar"
+                            >
+                            </ons-input>
+                            </p>
+                        
+                        <p>
+                        <ons-input
+                        class="inp" name="username" id="rusername" placeholder="Username" modifier="underbar"></ons-input>
+                        </p>
+                    
+                        <p>
+                        <ons-input
+                        class="inp"
+                        name="password"
+                            id="rpassword"
+                            placeholder="Password"
+                            type="password"
+                            modifier="underbar"
+                        >
+                        </ons-input>
+                        </p>
+                        <p>
+                        <ons-input
+                        class="inp"
+                        name="password_confirmation"
+                            id="rpassword_confirmation"
+                            placeholder="Confirm Password"
+                            type="password"
+                            modifier="underbar"
+                        >
+                        </ons-input>
+                        </p>
+                    
+                        <p>
+                        <ons-button
+                        class="inp but" onclick="register()">Register</ons-button>
+                        </p>
+                    </form>
+                </div>
+            <script>
+               
+            </script>
+        </ons-page>
+      </template>
+      
+      <template id="login.html">
+        <ons-page>
+          <ons-toolbar class="header">
+            <div class="left" style="display: none;">
+              <ons-back-button>Back</ons-back-button>
+            </div>
+            <div class="right" >
+              <ons-button onclick="fn.pushPage({'id': 'register.html', 'title': 'Registration'})">Register</ons-button>
+            </div>
+            <div class="center"></div>
+          </ons-toolbar>
+            <form id="frmlogin">
+                <div style="text-align: center; margin-top: 200px">
+                    <h1 class="logo">Tri-Ser</h1>
+                    <h3>LOGIN</h3>
+                    
+                    <p>
+                    <ons-input
+                    class="inp" id="lusername" name="username" placeholder="Username" modifier="underbar"></ons-input>
+                    </p>
+                
+                    <p>
+                    <ons-input
+                        class="inp"
+                        id="lpassword"
+                        name="password"
+                        placeholder="Password"
+                        type="password"
+                        modifier="underbar"
+                    >
+                    </ons-input>
+                    </p>
+                
+                    <p>
+                    <ons-button
+                    class="inp but" onclick="login()">Sign in</ons-button>
+                    </p>
+                </div>
+            </form>
+        <script>
+       
+        </script>
+    </ons-page>
+      </template>
+      
+      <ons-modal id="assign" onclick="//fn.hideDialog('assign')">
+        <form id="frmlogin">
+          <div style="text-align: center; margin-top: 100px; background-color:white;padding:3rem 0">
+            <h2 style="color:black">Assign driver</h2>
+              <ons-list-item>
+                <div class="center" style="justify-content: center;">
+                  <ons-select class="inp" id="selectdriver">
+                  </ons-select>
+                </div>
+              </ons-list-item>
+          
+              <p>
+              <ons-button
+              class="inp but" onclick="assignedto()" >Assign</ons-button>
+              </p>
+          </div>
+      </form>
+      </ons-modal>
+
+      
+      <style>
+        ons-splitter-side[animation=overlay] {
+          border-left: 1px solid #bbb;
+        }
+        .logo{
+            font-weight: bolder !important;
+            font-size: 3rem !important;
+            color:red;
+            text-align: center;
+        }
+        
+        .inp{
+            width: 50%;
+            margin: 1rem 0;
+        }
+        .but{
+            background-color:crimson;
+            color:white;
+            padding: .5rem;
+        }
+        .header{
+            background-color: #e74c3c;
+            height: 8vh;
+        }
+        .text-white{
+            color:white;
+        }
+        .content{
+            text-align: center;
+            margin-top: 100px;
+        }
+        table{
+          text-align: center;
+          min-width: 100%;
+        }
+        .table-cont{
+          width: 100%;
+          overflow: auto;
+          padding: 1rem;
+        }
+        tr>td:first-child {
+          text-align: left;
+        }
+        tr>th:first-child {
+          text-align: left;
+        }
+      </style>
+      <script>
+    const toast=(msg)=>{
+        
+        ons.notification.toast(String(msg), { timeout: 1000, animation: 'fall' })
+    }
+    const ajaxreq=(args)=>{
+        token=storage.getItem("token")
+        let ar={...args,
+          headers:{
+            Accept:'application/json',
+            Authorization:'Bearer ' + token
+          },
+        };
+        ar.type=args.type || 'get';
+        ar.url=server+args.url;
+        $.ajax(ar);
+      };
+      const adddriver=()=>{
+        ajaxreq({
+          url: "/api/adddriver",
+          type:'post',
+          data:$('#frmadddriver').serialize(),
+          success: function(result){
+            toast(result.msg)
+            driverlist()
+          },
+          error:(err)=>showinputerrors(err)
+        })
+      }
+      const driverlist=()=>{
+        ajaxreq({
+         url: "/api/drivers",
+         type:'get',
+         success: function(result){
+           if(result.drivers)
+           {
+             $('#title-filter-menu').html('<option>Select Driver...</option>');
+             $('#tabledriver').html('');
+              $('#selectdriver select').html('')
+             result.drivers.map((driver)=>{
+               $('#title-filter-menu').append('<option value="' + driver.id + '">' + driver.name + '</option>')
+              $('#tabledriver').append(`
+                <tr>
+                    <td>${driver.name}</td>
+                    <td>${driver.license}</td>
+                    <td>${driver.plate_no}</td>
+                    <td>${driver.cpnum}</td>
+                </tr>
+              `)
+              $('#selectdriver select').append(`
+              <option value="${driver.id}">${driver.name}</option>
+              `)
+             })
+           }
+         },
+         error:(res)=>{
+            $('#tabledriver').html('error fetching drivers list');
+         }
+       })
+     }
+     const assignedto=()=>{
+      let x=$('#selectdriver>select').val()
+      ajaxreq({
+        url: "/api/assign/"+transid,
+        type:'post',
+        data:{to:x},
+        success: function(result){
+         toast(result.msg)
+         transactions();
+        },
+      })
+     }
+     const transactions=()=>{
+        ajaxreq({
+         url: "/api/transactions",
+         type:'get',
+         success: function(result){
+           if(result.transactions){
+             $('#tabletransaction').html('')
+             result.transactions.map((transaction)=>{
+               let date=new Date(transaction.created_at)
+               date=`${date.getMonth()}/${date.getDate()}/${date.getFullYear()}`
+               let add="";
+               add+=(transaction.status=='for pickup'&&!transaction.driver_id)?`<button onclick="assign(${transaction.id})">Assign</button>`:''
+             $('#tabletransaction').append(`
+               <tr>
+                   <td>${transaction.pickup}</td>
+                   <td>${transaction.destination}</td>
+                   <td>${transaction.passengers_count}</td>
+                   <td>${date.toString()}</td>
+                   <td>${transaction.status}</td>
+                   <td>${add}</td>
+               </tr>
+             `)
+             })
+           }
+         },
+         error:(res)=>{
+            $('#tabletransaction').html('error fetching transaction list')
+         }
+       })
+     }
+          const back=()=>{
+            $('ons-back-button').click();
+          }
+        const showModal=()=> {
+            var modal = document.querySelector('ons-modal');
+            modal.show();
+            }
+        const checksession=()=>{
+            showModal()
+            //fn.pushPage({'id': 'loader.html'})
+            token=storage.getItem("token")
+            var modal = document.querySelector('ons-modal');
+            $.ajax({
+                url: server+"/api/checksession",
+                type:'get',
+                headers:{
+                Accept:'application/json',
+                Authorization:'Bearer ' + token
+                },
+                success:(res)=>{
+                    modal.hide()
+                },
+                error: function(result){
+                    modal.hide()
+                    window.location.href="index.html"
+                },
+            });
+            }
+            
+    const showinputerrors=(res)=>{
+        if(res.status==422){
+          res.responseJSON.errors  &&
+          Object.entries(res.responseJSON.errors).map(([name,val])=>{
+            //ons.notification.toast(String(val), { timeout: 1000, animation: 'fall' })
+            toast(val)
+            console.log('[name='+val+']')
+            //$('[name='+name+']').css({'color':'red'})
+          })
+        }
+      }
+           
+    const login=()=>{
+        $.ajax({
+          url: server+"/api/login",
+          type:"post",
+          headers:{
+            Accept:'application/json'
+          },
+          data:$("#frmlogin").serialize(),
+          success: function(result){
+              console.log(result)
+                storage.setItem("token", result.token)
+                storage.setItem("userid", result.user.id)
+                storage.setItem("acctype", result.user.acctype)
+                back(); 
+                ons.notification.toast('Login Successful', { timeout: 1000, animation: 'fall' })
+                transactions();
+            },
+          error: showinputerrors
+      });
+    }
+    let transid;
+     const assign=(id)=>{
+       transid=id;
+      fn.showDialog('assign')
+     }
+    const register=()=>{
+        console.log('register')
+        $.ajax({
+            url: server+"/api/register",
+            type:"post",
+            headers:{
+              Accept:'application/json',
+            },
+            data:$("#frmregister").serialize(),
+            success: function(result){
+                back();
+              toast('Registration Successful')
+              checksession();
+              window.location.reload();
+              },
+            error:showinputerrors
+        });
+    }
+          $('document').ready((e)=>{
+                driverlist();
+                transactions();
+                checksession();
+          })
+      </script>
+
+      <script>
+        window.fn = {};
+
+        window.fn.toggleMenu = function () {
+          document.getElementById('appSplitter').left.toggle();
+        };
+        
+        window.fn.loadView = function (index) {
+          document.getElementById('appTabbar').setActiveTab(index);
+          document.getElementById('sidemenu').close();
+        };
+        
+        window.fn.loadLink = function (url) {
+          window.open(url, '_blank');
+        };
+        
+        window.fn.pushPage = function (page, anim) {
+          if (anim) {
+            document.getElementById('appNavigator').pushPage(page.id, { data: { title: page.title }, animation: anim });
+          } else {
+            document.getElementById('appNavigator').pushPage(page.id, { data: { title: page.title } });
+          }
+        };
+        window.fn.showDialog = function (id) {
+          var elem = document.getElementById(id);
+          if (id === 'popover-dialog') {
+            elem.show(infoButton);
+          } else {
+            elem.show();
+            if (id === 'modal-dialog') {
+              clearTimeout(timeoutID);
+              timeoutID = setTimeout(function() { fn.hideDialog(id) }, 2000);
+            }
+          }
+        };
+        window.fn.hideDialog = function (id) {
+          document.getElementById(id).hide();
+        };
+      </script>
+
+</body>
+</html>
