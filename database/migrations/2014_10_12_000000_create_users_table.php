@@ -17,6 +17,7 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string('username',20)->unique();
             $table->string('cpnum',15);
+            $table->string('email',30);
             $table->string('password');
             $table->string('acctype',20)->default('client');
             $table->rememberToken();

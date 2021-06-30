@@ -58,7 +58,7 @@
       <template id="sidemenu.html">
         <ons-page>
           <div class="profile-pic">
-            <h1 class="logo">Tri-Ser</h1>
+            <img src="logo.png" alt="logo">
           </div>
        
       
@@ -200,10 +200,11 @@
                 <table>
                    <thead>
                      <tr>
-                       <th>Name</th>
-                       <th>License</th>
-                       <th>Plate_no</th>
-                       <th>Contact Number</th>
+                         <th>Name</th>
+                         <th>Plate Number</th>
+                         <th>Contact Number</th>
+                         <th>Status</th>
+                         <th>Action</th>
                      </tr>
                    </thead>
                    <tbody id="tabledriver">
@@ -225,10 +226,6 @@
                     <p>
                     <ons-input
                     class="inp" name="name" placeholder="Full Name" modifier="underbar"></ons-input>
-                    </p>
-                    <p>
-                    <ons-input
-                    class="inp" name="license" placeholder="License" modifier="underbar"></ons-input>
                     </p>
                     <p>
                     <ons-input
@@ -471,10 +468,11 @@
                $('#title-filter-menu').append('<option value="' + driver.id + '">' + driver.name + '</option>')
               $('#tabledriver').append(`
                 <tr>
-                    <td>${driver.name}</td>
-                    <td>${driver.license}</td>
-                    <td>${driver.plate_no}</td>
-                    <td>${driver.cpnum}</td>
+                  <td>${driver.name}</td>
+                  <td>${driver.plate_no}</td>
+                  <td>${driver.cpnum}</td>
+                  <td>${driver.status}</td>
+                  <td><button onclick="deletedriver(${driver.id})">delete</button></td>
                 </tr>
               `)
               $('#selectdriver select').append(`
@@ -487,6 +485,16 @@
             $('#tabledriver').html('error fetching drivers list');
          }
        })
+     }
+     const deletedriver=(id)=>{
+      ajaxreq({
+        url: "/api/driver/"+id,
+        type:'delete',
+        success: function(result){
+         toast(result.msg)
+         driverlist();
+        },
+      })
      }
      const assignedto=()=>{
       let x=$('#selectdriver>select').val()

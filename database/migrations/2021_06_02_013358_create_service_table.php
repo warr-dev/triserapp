@@ -15,13 +15,12 @@ class CreateServiceTable extends Migration
     {
         Schema::create('service', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('driver_id')->nullable();
             $table->unsignedInteger('user_id');
             $table->string('pickup');
-            $table->string('destination');
             $table->unsignedInteger('passengers_count')->default(1);
             $table->string('status')->default('for pickup');
-            $table->text('remarks')->nullable();
+            $table->text('notes')->nullable();
+            $table->text('rating')->nullable();
             $table->timestamps();
         });
     }

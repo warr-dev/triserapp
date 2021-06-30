@@ -19,8 +19,8 @@ class TransactionsController extends Controller
     {
         $validatedData = $request->validate([
             'pickup' => 'required|string|max:255',
-            'destination' => 'required|string|max:255',
             'passengers_count' => '',
+            'notes' => '',
         ]);
         $book=new Transactions(
             array_merge(
@@ -38,5 +38,12 @@ class TransactionsController extends Controller
         $id->driver_id=$request->input('to');
         $id->save();
         return \response(['msg'=>'driver Assigning successful','status'=>'success']);
+    }
+    public function rate(Request $request,Transactions $id)
+    {
+        $id->status='done';
+        $id->rating=$request->input('rate');
+        $id->save();
+        return \response(['msg'=>'Transaction marked as done','status'=>'success']);
     }
 }

@@ -24,9 +24,8 @@ class tricycleFactory extends Factory
         
         return [
             'name'=>$this->faker->name,
-            'license' =>$this->faker->bothify('???####'),
-            'plate_no' =>$this->faker->bothify('???###'),
-            'cpnum' =>'09321465987',
+            'plate_no' =>$this->faker->bothify('???####'),
+            'cpnum' =>'09'.$this->faker->bothify('##########'),
         ];
     }
 }

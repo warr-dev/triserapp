@@ -31,4 +31,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/service', ['uses'=> '\App\Http\Controllers\TransactionsController@store']);
     Route::post('/pickup', ['uses'=> '\App\Http\Controllers\BookingController@pickup']);
     Route::get('/transactions', ['uses'=> '\App\Http\Controllers\TransactionsController@transactions']);
+    Route::delete('/driver/{id}', ['uses'=> '\App\Http\Controllers\TricycleController@destroy']);
+    Route::patch('/rateservice/{id}', ['uses'=> '\App\Http\Controllers\TransactionsController@rate']);
+    Route::get('/myaccount', ['uses'=> '\App\Http\Controllers\AuthController@myAccount']);
+    Route::patch('/myaccount', ['uses'=> '\App\Http\Controllers\AuthController@update']);
 });

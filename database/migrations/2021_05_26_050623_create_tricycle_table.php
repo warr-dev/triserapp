@@ -17,9 +17,9 @@ class CreateTricycleTable extends Migration
             $table->id();
             $table->unsignedInteger('user_id')->nullable();
             $table->string('name');
-            $table->string('license');
             $table->string('plate_no');
             $table->string('cpnum');
+            $table->string('status')->default('active');
             $table->timestamps();
         });
     }

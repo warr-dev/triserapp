@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
         $user->username='admin';
         $user->acctype='admin';
         $user->cpnum='09321465987';
+        $user->email='email@example';
         $user->password=Hash::make('admin123');
         $user->save();
 

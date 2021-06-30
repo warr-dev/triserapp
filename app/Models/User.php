@@ -20,6 +20,7 @@ class User extends Authenticatable
     protected $fillable = [
         'username',
         'cpnum',
+        'email',
         'password',
     ];
 
@@ -46,5 +47,9 @@ class User extends Authenticatable
     public function transactions()
     {
         return $this->hasMany(Transactions::class);
+    }
+    public function profile()
+    {
+        return $this->hasMany(Profile::class,'user_id');
     }
 }
