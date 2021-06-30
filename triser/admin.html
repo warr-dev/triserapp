@@ -147,7 +147,6 @@
            <thead>
              <tr>
                <th>Pickup Point</th>
-               <th>Destination Point</th>
                <th>Passenger Count</th>
                <th>Date</th>
                <th data-priority="4">Status</th>
@@ -360,7 +359,7 @@
       
       <ons-modal id="assign" onclick="//fn.hideDialog('assign')">
         <form id="frmlogin">
-          <div style="text-align: center; margin-top: 100px; background-color:white;padding:3rem 0">
+          <div style="text-align: center; background-color:white;padding:1rem 0;">
             <h2 style="color:black">Assign driver/s</h2>
               <ons-list-item>
                 <div class="center" style="justify-content: center;">
@@ -372,6 +371,8 @@
               <p>
               <ons-button
               class="inp but" onclick="assignedto()" >Assign</ons-button>
+              <ons-button
+              class="inp but" onclick="fn.hideDialog('assign')" >Cancel</ons-button>
               </p>
           </div>
       </form>
@@ -523,7 +524,6 @@
              $('#tabletransaction').append(`
                <tr>
                    <td>${transaction.pickup}</td>
-                   <td>${transaction.destination}</td>
                    <td>${transaction.passengers_count}</td>
                    <td>${date.toString()}</td>
                    <td>${transaction.status}</td>

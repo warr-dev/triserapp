@@ -35,7 +35,8 @@ class TransactionsController extends Controller
     }
     public function assign(Request $request,Transactions $id)
     {
-        $id->driver_id=$request->input('to');
+        $id->drivers()->sync($request->input('to'));
+        $id->status='assigned';
         $id->save();
         return \response(['msg'=>'driver Assigning successful','status'=>'success']);
     }

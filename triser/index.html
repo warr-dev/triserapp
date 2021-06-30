@@ -283,6 +283,7 @@
                <tr>
                  <th>Transaction ID</th>
                  <th>Pickup Point</th>
+                 <th>Assigned to</th>
                  <th>Passenger Count</th>
                  <th>Date</th>
                  <th data-priority="4">Status</th>
@@ -635,11 +636,17 @@
              result.transactions.map((transaction)=>{
                let date=new Date(transaction.created_at)
                date=`${date.getMonth()}/${date.getDate()}/${date.getFullYear()}`
-               let action=transaction.status!=='done'?`<button onclick="done(${transaction.id})" >Done</button>`:'N/A'
+               let action=transaction.status=='assigned'?`<button onclick="done(${transaction.id})" >Done</button>`:'N/A'
+                let drivers=[];
+               if(transaction.drivers.length>0){
+                transaction.drivers.map((driver)=>{drivers.push(driver.name)})
+               }
+                
              $('#tabletransaction').append(`
                <tr>
                    <td>${transaction.id}</td>
                    <td>${transaction.pickup}</td>
+                   <td>${drivers.join(', ')}</td>
                    <td>${transaction.passengers_count}</td>
                    <td>${date.toString()}</td>
                    <td>${transaction.status}</td>
