@@ -377,6 +377,24 @@
           </div>
       </form>
       </ons-modal>
+      
+      <ons-modal id="viewdriver" onclick="">
+        <form id="frmlogin">
+          <div style="text-align: center; margin-top: 100px; background-color:white;padding:3rem 0">
+            <input type="hidden" id="rate" value="5">
+            <h2 style="color:black" id="drivername"></h2>
+              <img src="avatr.png" alt="" width="50%">
+              <div id="driverrate"></div>
+              <div id="drivercomments"></div>
+              <p>
+              <ons-button
+              class="inp but" onclick="fn.hideDialog('viewdriver')" >Done</ons-button>
+              </p>
+          </div>
+      </form>
+      </ons-modal>
+
+
 
       
       <style>
@@ -469,7 +487,7 @@
                $('#title-filter-menu').append('<option value="' + driver.id + '">' + driver.name + '</option>')
               $('#tabledriver').append(`
                 <tr>
-                  <td>${driver.name}</td>
+                  <td style="color:blue" onclick="viewdriver(${driver.id})">${driver.name}</td>
                   <td>${driver.plate_no}</td>
                   <td>${driver.cpnum}</td>
                   <td>${driver.status}</td>
@@ -497,6 +515,19 @@
         },
       })
      }
+     
+     const viewdriver=(id)=>{
+      fn.showDialog('viewdriver')
+      ajaxreq({
+        url: "/api/driver/"+id,
+        type:'get',
+        success: function(result){
+          $('#drivername').html(result.driver.name)
+          $('#driverrate').html(result.driver.name)
+          $('#drivercomment').html(result.driver.name)
+        },
+      })
+     }
      const assignedto=()=>{
       let x=$('#selectdriver>select').val()
       ajaxreq({
@@ -506,6 +537,7 @@
         success: function(result){
          toast(result.msg)
          transactions();
+         fn.hideDialog('assign')
         },
       })
      }
@@ -520,7 +552,7 @@
                let date=new Date(transaction.created_at)
                date=`${date.getMonth()}/${date.getDate()}/${date.getFullYear()}`
                let add="";
-               add+=(transaction.status=='for pickup'&&!transaction.driver_id)?`<button onclick="assign(${transaction.id})">Assign</button>`:''
+               add+=(transaction.status=='pending')?`<button onclick="assign(${transaction.id})">Assign</button>`:''
              $('#tabletransaction').append(`
                <tr>
                    <td>${transaction.pickup}</td>

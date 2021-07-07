@@ -19,4 +19,8 @@ class Tricycle extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function transactions()
+    {
+        return $this->belongsToMany(Transactions::class,'driver_service','driver_id','transaction_id');
+    }
 }

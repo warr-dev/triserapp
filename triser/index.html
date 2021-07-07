@@ -264,6 +264,7 @@
             <input type="hidden" id="rate" value="5">
             <h2 style="color:black">Rate Driver's Service</h2>
               <div id="ratedriver"></div>
+              <textarea id="comment" style="width:50%;margin:3rem auto" name="comment" placeholder="Say something about transaction"></textarea>
               <p>
               <ons-button
               class="inp but" onclick="markasdone()" >Done</ons-button>
@@ -271,7 +272,22 @@
           </div>
       </form>
       </ons-modal>
-
+      
+      <ons-modal id="viewdriver" onclick="">
+        <form id="frmlogin">
+          <div style="text-align: center; margin-top: 100px; background-color:white;padding:3rem 0">
+            <input type="hidden" id="rate" value="5">
+            <h2 style="color:black" id="drivername"></h2>
+              <img src="avatr.png" alt="" width="50%">
+              <div id="driverrate" style="margin-top:2rem"></div>
+              <div id="drivercomments" style="width:50%;height:3rem;margin:0 auto;overflow-y:auto;margin-top:2rem"></div>
+              <p>
+              <ons-button
+              class="inp but" onclick="fn.hideDialog('viewdriver')" >Done</ons-button>
+              </p>
+          </div>
+      </form>
+      </ons-modal>
 
       <template id="transactions.html">
         <ons-page>
@@ -534,7 +550,7 @@
               
                   <p>
                   <ons-button
-                  class="inp but" onclick="editprofile()">Register</ons-button>
+                  class="inp but" onclick="editprofile()">Update</ons-button>
                   </p>
                 </div>
             </form>
@@ -611,7 +627,7 @@
                $('#title-filter-menu').append('<option value="' + driver.id + '">' + driver.name + '</option>')
               $('#tabledriver').append(`
                 <tr>
-                    <td>${driver.name}</td>
+                    <td style="color:blue" onclick="viewdriver(${driver.id})">${driver.name}</td>
                     <td>${driver.plate_no}</td>
                     <td>${driver.cpnum}</td>
                 </tr>
@@ -623,6 +639,32 @@
             $('#tabledriver').html('error fetching drivers list');
          }
        })
+     }
+        
+     const viewdriver=(id)=>{
+      fn.showDialog('viewdriver')
+      $('#drivercomments').html('')
+      $('#drivercomments').html('')
+      $('#drivercomments').html('')
+      ajaxreq({
+        url: "/api/driver/"+id,
+        type:'get',
+        success: function(result){
+          $('#drivername').html(result.driver.name)
+          jQuery("#driverrate").emotionsRating({
+            emotionSize: 30,
+            bgEmotion: 'happy',
+            emotions: emotionsArray,
+            color: '#FF0066', //the color must be expressed with a css code
+                initialRating:result.rate.rate , //initialize the rating number
+            disabled: true, //set if the rating can be changed or not, default is false
+            //onUpdate: (value)=>{$('#rate').val(value)} //set value changed event handler
+          });
+          result.comments.map((comment)=>{
+            $('#drivercomments').append(`<div style="height:3rem;width:50vw;color:gray">"${comment}"</div>`)
+          })
+        },
+      })
      }
      
      const transactions=()=>{
@@ -636,7 +678,8 @@
              result.transactions.map((transaction)=>{
                let date=new Date(transaction.created_at)
                date=`${date.getMonth()}/${date.getDate()}/${date.getFullYear()}`
-               let action=transaction.status=='assigned'?`<button onclick="done(${transaction.id})" >Done</button>`:'N/A'
+               let action=transaction.status=='assigned'?`<button onclick="done(${transaction.id})" >Done</button>`:''
+               action+=transaction.status=='pending'?`<button onclick="cancel(${transaction.id})" >Cancel</button>`:''
                 let drivers=[];
                if(transaction.drivers.length>0){
                 transaction.drivers.map((driver)=>{drivers.push(driver.name)})
@@ -660,6 +703,21 @@
             $('#tabletransaction').html('error fetching transaction list')
          }
        })
+     }
+     const cancel=(id)=>{
+      ajaxreq({
+        url: "/api/transaction/"+id+"/cancel",
+        success: function(res){
+          console.log(res)
+          if(res.status=='success'){
+            toast("canceled successfully")
+            transactions();
+          }
+        },
+        error:(res)=>{
+            toast("an error occured")
+        }
+      })
      }
           const back=()=>{
             $('ons-back-button').click();
@@ -809,7 +867,7 @@
         ajaxreq({
           url: "/api/rateservice/"+transid,
           type:'patch',
-          data:{rate:$('#rate').val()},
+          data:{rate:$('#rate').val(),comment:$('#comment').val()},
           success: function(res){
             console.log(res)
             toast(res.msg)
@@ -827,7 +885,7 @@
           success: function(res){
             console.log(res)
             if(res.status=='successful'){
-              $('#edname').val(res.profile[0].name??'N/A')
+              $('#edname').val(res.profile.name??'N/A')
               $('#edcpnum').val(res.user.cpnum)
               $('#edemail').val(res.user.email)
               $('#edusername').val(res.user.username)
