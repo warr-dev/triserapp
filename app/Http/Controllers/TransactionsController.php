@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Transactions;
+use App\Models\Tricycle;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -39,6 +40,11 @@ class TransactionsController extends Controller
         $id->drivers()->sync($request->input('to'));
         $id->status='assigned';
         $id->save();
+        $drivers=Tricycle::select('*');
+        foreach($request->input('to') as $req){
+            $drivers=$drivers->orWhere('id',$req);
+        }
+        $drivers=$drivers->get();
         $drivermsg=
 'New Client!!!
 
@@ -47,9 +53,9 @@ Location :'.$id->pickup.'
 Contact Number :'.$id->client->cpnum.'
 Notes : '.$id->notes;
         
-        $drivernames=$id->drivers->pluck('name')->toArray();
-        $driverplates=$id->drivers->pluck('plate_no')->toArray();
-        $drivercpnum=$id->drivers->pluck('cpnum')->toArray();
+        $drivernames=$drivers->pluck('name')->toArray();
+        $driverplates=$drivers->pluck('plate_no')->toArray();
+        $drivercpnum=$drivers->pluck('cpnum')->toArray();
 
         $clientmsg=
 'At your service for today
@@ -57,12 +63,16 @@ Notes : '.$id->notes;
 Name/s : '.implode(', ',$drivernames).'
 Plate Number/s :'.implode(', ',$driverplates).'
 Contact Number/s :'.implode(', ',$drivercpnum);
-
+        // $test=['cmsg'=>$clientmsg,'dmsg'=>$drivermsg];
         $this->itexmo($id->client->cpnum,$clientmsg);
         foreach($id->drivers as $driver){
             $this->itexmo($driver->cpnum,$drivermsg);
         }
-        return \response(['msg'=>'driver Assigning successful','status'=>'success']);
+        return \response([
+            'msg'=>'driver Assigning successful',
+            'status'=>'success',
+            // 'test'=>$test
+            ]);
     }
     public function cancel(Request $request,Transactions $id)
     {
