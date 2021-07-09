@@ -65,7 +65,7 @@ Plate Number/s :'.implode(', ',$driverplates).'
 Contact Number/s :'.implode(', ',$drivercpnum);
         // $test=['cmsg'=>$clientmsg,'dmsg'=>$drivermsg];
         $this->itexmo($id->client->cpnum,$clientmsg);
-        foreach($id->drivers as $driver){
+        foreach($drivers as $driver){
             $this->itexmo($driver->cpnum,$drivermsg);
         }
         return \response([
