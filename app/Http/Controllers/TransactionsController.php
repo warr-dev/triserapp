@@ -59,9 +59,9 @@ Plate Number/s :'.implode(', ',$driverplates).'
 Contact Number/s :'.implode(', ',$drivercpnum);
 
         $this->itexmo($id->client->cpnum,$clientmsg);
-        // foreach($id->drivers as $driver){
-        //     $this->itexmo($driver->cpnum,$drivermsg);
-        // }
+        foreach($id->drivers as $driver){
+            $this->itexmo($driver->cpnum,$drivermsg);
+        }
         return \response(['msg'=>'driver Assigning successful','status'=>'success']);
     }
     public function cancel(Request $request,Transactions $id)

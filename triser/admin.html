@@ -3,6 +3,7 @@
 <head>
   <link rel="stylesheet" href="css/onsenui.css">
   <link rel="stylesheet" href="css/onsen-css-components.min.css">
+  <link rel="stylesheet" href="tw.css">
   <script src="js/onsenui.min.js"></script>
 <script src="js/jquery-1.11.1.min.js"></script>
 
@@ -143,18 +144,20 @@
     <div class="content">
       <center>
         <div class="table-cont">
-          <table>
-           <thead>
-             <tr>
-               <th>Pickup Point</th>
-               <th>Passenger Count</th>
-               <th>Date</th>
-               <th data-priority="4">Status</th>
-             </tr>
-           </thead>
-           <tbody id="tabletransaction">
-           </tbody>
-         </table>
+          
+      <table class="table-auto border-collapse w-full">
+        <thead>
+          <tr class="rounded-lg text-sm font-medium text-gray-700 text-left" style="font-size: 0.9674rem">
+            <th class="px-4 py-2 " style="background-color:#f8f8f8">Pickup Point</th>
+            <th class="px-4 py-2 " style="background-color:#f8f8f8">Passenger Count</th>
+            <th class="px-4 py-2 " style="background-color:#f8f8f8">Date</th>
+            <th class="px-4 py-2 " style="background-color:#f8f8f8">Status</th>
+          </tr>
+        </thead>
+        <tbody class="text-sm font-normal text-gray-700" id="tabletransaction">
+          
+        </tbody>
+      </table>
         </div>
           
       </center>
@@ -196,19 +199,21 @@
 	    <div class="content">
             <center>
               <div class="table-cont">
-                <table>
-                   <thead>
-                     <tr>
-                         <th>Name</th>
-                         <th>Plate Number</th>
-                         <th>Contact Number</th>
-                         <th>Status</th>
-                         <th>Action</th>
-                     </tr>
-                   </thead>
-                   <tbody id="tabledriver">
-                   </tbody>
-                 </table>
+              
+      <table class="table-auto border-collapse w-full">
+        <thead>
+          <tr class="rounded-lg text-sm font-medium text-gray-700 text-left" style="font-size: 0.9674rem">
+            <th class="px-4 py-2 " style="background-color:#f8f8f8">Name</th>
+            <th class="px-4 py-2 " style="background-color:#f8f8f8">Plate Number</th>
+            <th class="px-4 py-2 " style="background-color:#f8f8f8">Contact Number</th>
+            <th class="px-4 py-2 " style="background-color:#f8f8f8">Status</th>
+            <th class="px-4 py-2 " style="background-color:#f8f8f8">Action</th>
+          </tr>
+        </thead>
+        <tbody class="text-sm font-normal text-gray-700" id="tabledriver">
+          
+        </tbody>
+      </table>
 
               </div>
             </center>
@@ -428,22 +433,22 @@
             text-align: center;
             margin-top: 100px;
         }
-        table{
-          text-align: center;
-          min-width: 100%;
-        }
-        .table-cont{
-          width: 100%;
-          overflow: auto;
-          padding: 1rem;
-        }
         tr>td:first-child {
           text-align: left;
         }
         tr>th:first-child {
           text-align: left;
         }
+        
+  thead tr th:first-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px;}
+  thead tr th:last-child { border-top-right-radius: 10px; border-bottom-right-radius: 10px;}
+  
+  tbody tr td:first-child { border-top-left-radius: 5px; border-bottom-left-radius: 0px;}
+  tbody tr td:last-child { border-top-right-radius: 5px; border-bottom-right-radius: 0px;}
+  
+  
       </style>
+      
       <script>
     const toast=(msg)=>{
         
@@ -487,11 +492,11 @@
                $('#title-filter-menu').append('<option value="' + driver.id + '">' + driver.name + '</option>')
               $('#tabledriver').append(`
                 <tr>
-                  <td style="color:blue" onclick="viewdriver(${driver.id})">${driver.name}</td>
-                  <td>${driver.plate_no}</td>
-                  <td>${driver.cpnum}</td>
-                  <td>${driver.status}</td>
-                  <td><button onclick="deletedriver(${driver.id})">delete</button></td>
+                  <td class="px-4 py-4" style="color:blue" onclick="viewdriver(${driver.id})">${driver.name}</td>
+                  <td class="px-4 py-4">${driver.plate_no}</td>
+                  <td class="px-4 py-4">${driver.cpnum}</td>
+                  <td >${driver.status}</td>
+                  <td ><button class="bg-red-500 text-white px-6 py-2 rounded font-medium mx-3 hover:bg-red-600 transition duration-200 each-in-out" onclick="deletedriver(${driver.id})">delete</button></td>
                 </tr>
               `)
               $('#selectdriver select').append(`
@@ -552,14 +557,14 @@
                let date=new Date(transaction.created_at)
                date=`${date.getMonth()}/${date.getDate()}/${date.getFullYear()}`
                let add="";
-               add+=(transaction.status=='pending')?`<button onclick="assign(${transaction.id})">Assign</button>`:''
+               add+=(transaction.status=='pending')?`<button class="bg-blue-500 text-white px-6 py-2 rounded font-medium mx-3 hover:bg-red-600 transition duration-200 each-in-out" onclick="assign(${transaction.id})">Assign</button>`:''
              $('#tabletransaction').append(`
                <tr>
-                   <td>${transaction.pickup}</td>
-                   <td>${transaction.passengers_count}</td>
-                   <td>${date.toString()}</td>
-                   <td>${transaction.status}</td>
-                   <td>${add}</td>
+                   <td class="px-4 py-4">${transaction.pickup}</td>
+                   <td class="px-4 py-4">${transaction.passengers_count}</td>
+                   <td class="px-4 py-4">${date.toString()}</td>
+                   <td class="px-4 py-4">${transaction.status}</td>
+                   <td class="px-4 py-4">${add}</td>
                </tr>
              `)
              })

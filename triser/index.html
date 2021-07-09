@@ -3,6 +3,7 @@
 <head>
   <link rel="stylesheet" href="css/onsenui.css">
   <link rel="stylesheet" href="css/onsen-css-components.min.css">
+  <link rel="stylesheet" href="tw.css">
   <script src="js/onsenui.min.js"></script>
 <link rel="stylesheet" href="css/jquery.mobile.structure-1.4.5.min.css" />
 <script src="js/jquery-1.11.1.min.js"></script>
@@ -240,18 +241,19 @@
         <ons-page>
                 
 	    <div class="content">
-            <center>
-            <table data-role="table" class="ui-responsive table-stripe">
-                     <thead>
-                       <tr>
-                         <th>Name</th>
-                         <th>Plate_no</th>
-                         <th>Contact Number</th>
-                       </tr>
-                     </thead>
-                     <tbody id="tabledriver">
-                     </tbody>
-                   </table>
+            <center>  
+              <table class="table-auto border-collapse w-full">
+                <thead>
+                  <tr class="rounded-lg text-sm font-medium text-gray-700 text-left" style="font-size: 0.9674rem">
+                    <th class="px-4 py-2 " style="background-color:#f8f8f8">Name</th>
+                    <th class="px-4 py-2 " style="background-color:#f8f8f8">Plate Number</th>
+                    <th class="px-4 py-2 " style="background-color:#f8f8f8">Contact Number</th>
+                  </tr>
+                </thead>
+                <tbody class="text-sm font-normal text-gray-700" id="tabledriver">
+                  
+                </tbody>
+              </table>
             </center>
         </div><!-- /content -->
         </ons-page>
@@ -260,14 +262,18 @@
 
       <ons-modal id="mark-as-done" onclick="//fn.hideDialog('assign')">
         <form id="frmlogin">
-          <div style="text-align: center; margin-top: 100px; background-color:white;padding:3rem 0">
+          <div style="text-align: center; margin-top: 100px; background-color:white;padding:3rem 0;color:black">
             <input type="hidden" id="rate" value="5">
-            <h2 style="color:black">Rate Driver's Service</h2>
+            <h2>Rate Driver's Service</h2>
               <div id="ratedriver"></div>
               <textarea id="comment" style="width:50%;margin:3rem auto" name="comment" placeholder="Say something about transaction"></textarea>
               <p>
               <ons-button
               class="inp but" onclick="markasdone()" >Done</ons-button>
+              </p>
+              <p>
+              <ons-button
+              class="inp but" onclick="fn.hideDialog('mark-as-done')" >Cancel</ons-button>
               </p>
           </div>
       </form>
@@ -278,7 +284,7 @@
           <div style="text-align: center; margin-top: 100px; background-color:white;padding:3rem 0">
             <input type="hidden" id="rate" value="5">
             <h2 style="color:black" id="drivername"></h2>
-              <img src="avatr.png" alt="" width="50%">
+              <img src="avatr.png" alt="" width="50%" style="margin:0 auto">
               <div id="driverrate" style="margin-top:2rem"></div>
               <div id="drivercomments" style="width:50%;height:3rem;margin:0 auto;overflow-y:auto;margin-top:2rem"></div>
               <p>
@@ -289,26 +295,52 @@
       </form>
       </ons-modal>
 
+       
+      <ons-modal id="code" onclick="">
+        <form id="verify">
+          <div style="text-align: center; margin-top: 100px; background-color:white;padding:3rem 0;color:black">
+            <input type="hidden" id="rate" value="5">
+            <h2>Veriy Phone Number</h2>
+              <div>
+                <p>
+                  <ons-input
+                  class="inp"
+                    name="code"
+                      placeholder="Enter code received"
+                      type="text"
+                      modifier="underbar"
+                  >
+                  </ons-input>
+                </p>
+              </div>
+              <p>
+              <ons-button
+              class="inp but" onclick="verify()" >Done</ons-button>
+              </p>
+          </div>
+      </form>
+      </ons-modal>
+
       <template id="transactions.html">
         <ons-page>
                 
     <div class="content">
         <center>
-            <table data-role="table" class="ui-responsive table-stripe">
-             <thead>
-               <tr>
-                 <th>Transaction ID</th>
-                 <th>Pickup Point</th>
-                 <th>Assigned to</th>
-                 <th>Passenger Count</th>
-                 <th>Date</th>
-                 <th data-priority="4">Status</th>
-                 <th>Action</th>
-               </tr>
-             </thead>
-             <tbody id="tabletransaction">
-             </tbody>
-           </table>
+            
+      <table class="table-auto border-collapse w-full">
+        <thead>
+          <tr class="rounded-lg text-sm font-medium text-gray-700 text-left" style="font-size: 0.9674rem">
+            <th class="px-4 py-2 " style="background-color:#f8f8f8">Pickup Point</th>
+            <th class="px-4 py-2 " style="background-color:#f8f8f8">Assigned to</th>
+            <th class="px-4 py-2 " style="background-color:#f8f8f8">Passenger Count</th>
+            <th class="px-4 py-2 " style="background-color:#f8f8f8">Date</th>
+            <th class="px-4 py-2 " style="background-color:#f8f8f8">Status</th>
+          </tr>
+        </thead>
+        <tbody class="text-sm font-normal text-gray-700" id="tabletransaction">
+          
+        </tbody>
+      </table>
             
         </center>
       </div>
@@ -351,7 +383,7 @@
             <div class="center"></div>
           </ons-toolbar>
                 <div style="text-align: center; margin-top: 100px">
-                  <img src="logo.png" alt="logo">
+                  <img src="logo.png" alt="logo" style="margin:0 auto">
 
                     <h3 onclick="fn.pushPage({'id': 'conf.html', 'title': 'Configuration'})">Registration</h3>
                     <form id="frmregister">
@@ -440,8 +472,8 @@
             <div class="center"></div>
           </ons-toolbar>
             <form id="frmlogin">
-                <div style="text-align: center; margin-top: 200px">
-                  <img src="logo.png" alt="logo">
+                <div style="text-align: center; margin-top: 100px">
+                  <img src="logo.png" alt="logo" style="margin:0 auto">
                     <h3>LOGIN</h3>
                     
                     <p>
@@ -592,9 +624,19 @@
             text-align: center;
             margin-top: 100px;
         }
-        table{
-          width: 100%;
+        h2{
+          font-size: x-large;
+          font-weight: bold ;
+          padding: 1rem 0;
         }
+            
+  thead tr th:first-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px;}
+  thead tr th:last-child { border-top-right-radius: 10px; border-bottom-right-radius: 10px;}
+  
+  tbody tr td:first-child { border-top-left-radius: 5px; border-bottom-left-radius: 0px;}
+  tbody tr td:last-child { border-top-right-radius: 5px; border-bottom-right-radius: 0px;}
+  
+  
       </style>
       <script>
     const toast=(msg)=>{
@@ -627,9 +669,9 @@
                $('#title-filter-menu').append('<option value="' + driver.id + '">' + driver.name + '</option>')
               $('#tabledriver').append(`
                 <tr>
-                    <td style="color:blue" onclick="viewdriver(${driver.id})">${driver.name}</td>
-                    <td>${driver.plate_no}</td>
-                    <td>${driver.cpnum}</td>
+                    <td class="px-4 py-4" style="color:blue" onclick="viewdriver(${driver.id})">${driver.name}</td>
+                    <td class="px-4 py-4">${driver.plate_no}</td>
+                    <td class="px-4 py-4" >${driver.cpnum}</td>
                 </tr>
               `)
              })
@@ -678,8 +720,8 @@
              result.transactions.map((transaction)=>{
                let date=new Date(transaction.created_at)
                date=`${date.getMonth()}/${date.getDate()}/${date.getFullYear()}`
-               let action=transaction.status=='assigned'?`<button onclick="done(${transaction.id})" >Done</button>`:''
-               action+=transaction.status=='pending'?`<button onclick="cancel(${transaction.id})" >Cancel</button>`:''
+               let action=transaction.status=='assigned'?`<button class="bg-teal-500 text-white px-6 py-2 rounded font-medium mx-3 hover:bg-red-600 transition duration-200 each-in-out" onclick="done(${transaction.id})" >Done</button>`:''
+               action+=transaction.status=='pending'?`<button class="bg-red-500 text-white px-6 py-2 rounded font-medium mx-3 hover:bg-red-600 transition duration-200 each-in-out" onclick="cancel(${transaction.id})" >Cancel</button>`:''
                 let drivers=[];
                if(transaction.drivers.length>0){
                 transaction.drivers.map((driver)=>{drivers.push(driver.name)})
@@ -687,13 +729,12 @@
                 
              $('#tabletransaction').append(`
                <tr>
-                   <td>${transaction.id}</td>
-                   <td>${transaction.pickup}</td>
-                   <td>${drivers.join(', ')}</td>
-                   <td>${transaction.passengers_count}</td>
-                   <td>${date.toString()}</td>
-                   <td>${transaction.status}</td>
-                   <td>${action}</td>
+                   <td class="px-4 py-4">${transaction.pickup}</td>
+                   <td class="px-4 py-4">${drivers.join(', ')}</td>
+                   <td class="px-4 py-4">${transaction.passengers_count}</td>
+                   <td class="px-4 py-4">${date.toString()}</td>
+                   <td class="px-4 py-4">${transaction.status}</td>
+                   <td class="px-4 py-4">${action}</td>
                </tr>
              `)
              })
@@ -780,7 +821,10 @@
                 ons.notification.toast('Login Successful', { timeout: 1000, animation: 'fall' })
                 transactions();
             },
-          error: showinputerrors
+          error: (e)=>{
+            showinputerrors(e)
+            toast(e.responseJSON.msg)
+          }
       });
     }
      
@@ -793,10 +837,11 @@
             },
             data:$("#frmregister").serialize(),
             success: function(result){
-                back();
-              toast('Registration Successful')
-              checksession();
-              window.location.reload();
+                //back();
+                fn.showDialog('code')
+              //toast('Registration Successful')
+              // checksession();
+              //window.location.reload();
               },
             error:showinputerrors
         });
@@ -910,6 +955,23 @@
           },
           error:(res)=>{
               toast("an error occured")
+          }
+        })
+      }
+      const verify=()=>{
+        ajaxreq({
+          url: "/api/verify",
+          type:'post',
+          data:$("#verify").serialize(),
+          success: function(res){
+            if(res.status=='success'){
+              toast("Registration successful")
+              window.location.reload();
+            }
+          },
+          error:(res)=>{
+            showinputerrors(res)
+            //toast("an error occured")
           }
         })
       }

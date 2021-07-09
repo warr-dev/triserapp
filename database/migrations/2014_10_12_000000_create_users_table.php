@@ -20,6 +20,8 @@ class CreateUsersTable extends Migration
             $table->string('email',30);
             $table->string('password');
             $table->string('acctype',20)->default('client');
+            $table->string('status',20)->default('not verified');
+            $table->string('code')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

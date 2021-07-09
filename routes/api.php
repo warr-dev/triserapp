@@ -23,7 +23,8 @@ Route::middleware('auth:sanctum')->get('/checksession', function (Request $reque
 
 Route::post('/register', ['uses'=> '\App\Http\Controllers\AuthController@register']);
 Route::post('/login', ['uses'=> '\App\Http\Controllers\AuthController@login']);
-Route::get('/test/{id}', ['uses'=> '\App\Http\Controllers\TricycleController@show']);
+Route::post('/verify', ['uses'=> '\App\Http\Controllers\AuthController@verify']);
+// Route::get('/test/{id}', ['uses'=> '\App\Http\Controllers\TricycleController@show']);
 
 Route::get('/drivers', ['uses'=> '\App\Http\Controllers\TricycleController@index']);
 Route::middleware(['auth:sanctum'])->group(function () {
