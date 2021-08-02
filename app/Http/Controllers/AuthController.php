@@ -37,7 +37,7 @@ class AuthController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users',
-            'cpnum' => 'required|digit:11',
+            'cpnum' => 'required|digits:11',
             'email' => 'required|email',
             'password' => 'required|string|min:8|confirmed',
         ]);
@@ -106,10 +106,7 @@ class AuthController extends Controller
         $user=auth('sanctum')->user();
         // return response($user->username);
         $validatedData = $request->validate([
-            'username' => [
-                'required',
-                'string',
-            ],
+            'username' =>'required|string',
             'cpnum' => 'required|digits:11',
             'email' => 'required|email',
         ]);
