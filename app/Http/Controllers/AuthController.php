@@ -37,7 +37,7 @@ class AuthController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users',
-            'cpnum' => 'required|string|max:255',
+            'cpnum' => 'required|digit:11',
             'email' => 'required|email',
             'password' => 'required|string|min:8|confirmed',
         ]);
@@ -104,6 +104,15 @@ class AuthController extends Controller
     public function update(Request $request)
     {
         $user=auth('sanctum')->user();
+        // return response($user->username);
+        $validatedData = $request->validate([
+            'username' => [
+                'required',
+                'string',
+            ],
+            'cpnum' => 'required|digits:11',
+            'email' => 'required|email',
+        ]);
         $data=[
             'username'=>$request->input('username'),
             'cpnum'=>$request->input('cpnum'),
@@ -112,7 +121,8 @@ class AuthController extends Controller
         if($request->input('password'))
             $data['password']=$request->input('password');
         $user->update($data);
-        $user->profile->first()->update(['name'=>$request->input('name')]);
+        if($user->acctype!='admin')
+            $user->profile->first()->update(['name'=>$request->input('name')]);
         return \response([
             'status'=>'successful',
             'msg'=> "Profile Updated Successfully",
@@ -123,7 +133,7 @@ class AuthController extends Controller
     // ITEXMO SEND SMS API - PHP - CURL-LESS METHOD
     // Visit www.itexmo.com/developers.php for more info about this API
     //##########################################################################
-    function itexmo($number,$message,$apicode='ST-PETRE365581_JG6XH',$passwd='5w[1@87]8$'){
+    function itexmo($number,$message,$apicode='ST-BENED777092_6WFM9',$passwd='2z8ef56c!%'){
         $url = 'https://www.itexmo.com/php_api/api.php';
         $itexmo = array(
             '1' => $number, 

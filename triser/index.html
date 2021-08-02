@@ -207,6 +207,7 @@
                       window.location.href="#home"
                       toast(res.msg)
                       transactions();
+                      clr();
                     }
                   },
                   error:showinputerrors
@@ -261,7 +262,6 @@
 
 
       <ons-modal id="mark-as-done" onclick="//fn.hideDialog('assign')">
-        <form id="frmlogin">
           <div style="text-align: center; margin-top: 100px; background-color:white;padding:3rem 0;color:black">
             <input type="hidden" id="rate" value="5">
             <h2>Rate Driver's Service</h2>
@@ -276,24 +276,20 @@
               class="inp but" onclick="fn.hideDialog('mark-as-done')" >Cancel</ons-button>
               </p>
           </div>
-      </form>
       </ons-modal>
-      
       <ons-modal id="viewdriver" onclick="">
-        <form id="frmlogin">
-          <div style="text-align: center; margin-top: 100px; background-color:white;padding:3rem 0">
-            <input type="hidden" id="rate" value="5">
-            <h2 style="color:black" id="drivername"></h2>
-              <img src="avatr.png" alt="" width="50%" style="margin:0 auto">
-              <div id="driverrate" style="margin-top:2rem"></div>
-              <div id="drivercomments" style="width:50%;height:3rem;margin:0 auto;overflow-y:auto;margin-top:2rem"></div>
-              <p>
-              <ons-button
-              class="inp but" onclick="fn.hideDialog('viewdriver')" >Done</ons-button>
-              </p>
-          </div>
-      </form>
-      </ons-modal>
+        <div style="text-align: center; margin-top: 100px; background-color:white;padding:3rem 0;color:black">
+          <input type="hidden" id="rate" value="5">
+          <h2 class="modalheadtext" id="drivername"></h2>
+            <img src="avatr.png" alt="" width="50%" style="margin:0 auto">
+            <div id="driverrate"></div>
+            <div style="width:100%;height:4rem;overflow-y:auto;margin:1rem" id="drivercomments"></div>
+            <p>
+            <ons-button
+            class="inp but" onclick="fn.hideDialog('viewdriver')" >Done</ons-button>
+            </p>
+        </div>
+    </ons-modal>
 
        
       <ons-modal id="code" onclick="">
@@ -335,6 +331,7 @@
             <th class="px-4 py-2 " style="background-color:#f8f8f8">Passenger Count</th>
             <th class="px-4 py-2 " style="background-color:#f8f8f8">Date</th>
             <th class="px-4 py-2 " style="background-color:#f8f8f8">Status</th>
+            <th class="px-4 py-2 " style="background-color:#f8f8f8">Action</th>
           </tr>
         </thead>
         <tbody class="text-sm font-normal text-gray-700" id="tabletransaction">
@@ -591,6 +588,7 @@
         </script>
     </ons-page>
       </template>
+      
 
       
       <style>
@@ -685,26 +683,32 @@
         
      const viewdriver=(id)=>{
       fn.showDialog('viewdriver')
-      $('#drivercomments').html('')
-      $('#drivercomments').html('')
+      $('#drivername').html('')
+      $('#driverrate').html('')
       $('#drivercomments').html('')
       ajaxreq({
         url: "/api/driver/"+id,
         type:'get',
         success: function(result){
           $('#drivername').html(result.driver.name)
-          jQuery("#driverrate").emotionsRating({
-            emotionSize: 30,
-            bgEmotion: 'happy',
-            emotions: emotionsArray,
-            color: '#FF0066', //the color must be expressed with a css code
-                initialRating:result.rate.rate , //initialize the rating number
-            disabled: true, //set if the rating can be changed or not, default is false
-            //onUpdate: (value)=>{$('#rate').val(value)} //set value changed event handler
-          });
+          let smileys="";
+          for(let i=1;i<=5;i++){
+            let op=i<=result.rate.rate?1:0.3;
+            smileys+=`<div class="emotion-style-ratedriver" data-index="1" style="opacity: ${op};">😊</div>`;
+          }
+          if(result.rate.count==0) smileys="No rating yet";
+          let rate=`<div class="emotion-container-ratedriver" style="display:flex;color:black;justify-content:center;padding:1rem">${smileys}</div>`;
+          if(result.rate.count!=0)rate+=`<div>rated by: ${result.rate.count}</div>`;
+          $('#driverrate').html(rate)
+          $('#drivercomment').html(result.driver.name)
           result.comments.map((comment)=>{
-            $('#drivercomments').append(`<div style="height:3rem;width:50vw;color:gray">"${comment}"</div>`)
+            $('#drivercomments').append(
+              `<div style="width:80vw;color:gray;margin:.5rem;display:inline-block">
+                <div>"${comment.comment}"</div>
+                <div style="text-align:right">-${comment.client.profile.name}</div>
+              </div>`)
           })
+
         },
       })
      }
@@ -955,8 +959,12 @@
           },
           error:(res)=>{
               toast("an error occured")
+              showinputerrors(res)
           }
         })
+      }
+      function clr(){
+        $(':input').val('');
       }
       const verify=()=>{
         ajaxreq({
@@ -971,6 +979,7 @@
           },
           error:(res)=>{
             showinputerrors(res)
+            res.responseJSON.msg && toast(res.responseJSON.msg)
             //toast("an error occured")
           }
         })

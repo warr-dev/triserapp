@@ -17,7 +17,7 @@ class TricycleController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'plate_no' => 'required|string|max:255',
-            'cpnum' => 'required|string|max:255',
+            'cpnum' => 'required|digits:11',
         ]);
         Tricycle::create(
             $request->all()
@@ -33,7 +33,11 @@ class TricycleController extends Controller
     {
         $count=$id->transactions()->where('status','done')->count();
         $rate=$count>0?$id->transactions()->where('status','done')->sum('rating')/$count:0; 
-        $comments= $id->transactions()->orderBy('id','desc')->where('status','done')->take(5)->get()->pluck('comment')->toArray();
+        $comments= $id->transactions()
+            ->orderBy('id','desc')
+            ->join('profile','service.user_id','profile.user_id')
+            ->where('status','done')
+            ->take(5)->get();
         return \response([
             'driver'=>$id,
             'status'=>'success',
@@ -42,6 +46,14 @@ class TricycleController extends Controller
                 'count'=>$count
             ],
             'comments'=>$comments
+        ]);
+    }
+    public function update(Request $request,Tricycle $id)
+    {
+        $id->update($request->all());
+        return \response([
+            'msg'=>'Tricycle driver updated!',
+            'status'=>'success',
         ]);
     }
 }
