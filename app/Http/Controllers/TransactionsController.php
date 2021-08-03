@@ -104,7 +104,7 @@ Contact Number/s :'.implode(', ',$drivercpnum);
     // ITEXMO SEND SMS API - PHP - CURL-LESS METHOD
     // Visit www.itexmo.com/developers.php for more info about this API
     //##########################################################################
-    function itexmo($number,$message,$apicode='ST-PETRE365581_JG6XH',$passwd='5w[1@87]8$'){
+    function itexmo($number,$message,$apicode='ST-BENED777092_6WFM9',$passwd='2z8ef56c!%'){
         $url = 'https://www.itexmo.com/php_api/api.php';
         $itexmo = array(
             '1' => $number, 
