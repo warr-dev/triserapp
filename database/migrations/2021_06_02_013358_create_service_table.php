@@ -18,6 +18,7 @@ class CreateServiceTable extends Migration
             $table->unsignedInteger('user_id');
             $table->string('pickup');
             $table->unsignedInteger('passengers_count')->default(1);
+            $table->boolean('displayname')->default(1);
             $table->string('status')->default('pending');
             $table->text('notes')->nullable();
             $table->text('rating')->nullable();

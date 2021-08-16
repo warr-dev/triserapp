@@ -56,4 +56,22 @@ class TricycleController extends Controller
             'status'=>'success',
         ]);
     }
+    public function bandriver(Tricycle $id)
+    {
+        $id->update(['status'=>'banned']);
+        return \response([
+            'msg'=>'Tricycle driver Banned!',
+            'status'=>'success',
+            'driver'=>$id
+        ]);
+    }
+    public function unbandriver(Tricycle $id)
+    {
+        $id->update(['status'=>'active']);
+        return \response([
+            'msg'=>'Tricycle driver Un-Banned!',
+            'status'=>'success',
+            'driver'=>$id
+        ]);
+    }
 }

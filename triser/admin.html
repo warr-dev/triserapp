@@ -479,6 +479,10 @@
               <div style="width:100%;height:4rem;overflow-y:auto;margin:1rem" id="drivercomments"></div>
               <p>
               <ons-button
+              class="inp but" id="ban" >Ban Driver</ons-button>
+              </p>
+              <p>
+              <ons-button
               class="inp but" onclick="fn.hideDialog('viewdriver')" >Done</ons-button>
               </p>
           </div>
@@ -663,6 +667,7 @@
      const viewdriver=(id)=>{
       fn.showDialog('viewdriver')
       showdriver(id);
+      driverid=id;
      }
      function showdriver(id){
       $('#drivername').html('')
@@ -693,6 +698,18 @@
 
           $('#drname').val(result.driver.name)
           $('#drcpnum').val(result.driver.cpnum)
+          if(result.driver.status=='banned'){
+            $('#ban').html('Un-ban Driver')
+            $('#ban').click((e)=>{
+              unbandriver();
+            })
+          }
+          else{
+            $('#ban').html('Ban Driver')
+            $('#ban').click((e)=>{
+              unbandriver();
+            })
+          }
         },
       })
      }
@@ -923,6 +940,46 @@
             if(res.status=='success'){
               toast(res.msg);
               fn.hideDialog('editdriver')
+              driverlist()
+            }
+          },
+          error:(res)=>{
+              showinputerrors(err);
+              toast('error occured')
+          }
+        })
+
+      }
+      
+      function bandriver(){
+        ajaxreq({
+          url: "/api/driver/"+driverid+"/ban",
+          type:'patch',
+          success: function(res){
+            console.log(res)
+            if(res.status=='success'){
+              toast(res.msg);
+              fn.hideDialog('viewdriver')
+              driverlist()
+            }
+          },
+          error:(res)=>{
+              showinputerrors(err);
+              toast('error occured')
+          }
+        })
+
+      }
+      
+      function unbandriver(){
+        ajaxreq({
+          url: "/api/driver/"+driverid+"/unban",
+          type:'patch',
+          success: function(res){
+            console.log(res)
+            if(res.status=='success'){
+              toast(res.msg);
+              fn.hideDialog('viewdriver')
               driverlist()
             }
           },

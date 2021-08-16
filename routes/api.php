@@ -37,6 +37,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::delete('/driver/{id}', ['uses'=> '\App\Http\Controllers\TricycleController@destroy']);
     Route::get('/driver/{id}', ['uses'=> '\App\Http\Controllers\TricycleController@show']);
     Route::patch('/driver/{id}', ['uses'=> '\App\Http\Controllers\TricycleController@update']);
+    Route::patch('/driver/{id}/ban', ['uses'=> '\App\Http\Controllers\TricycleController@bandriver']);
+    Route::patch('/driver/{id}/unban', ['uses'=> '\App\Http\Controllers\TricycleController@unbandriver']);
     Route::patch('/rateservice/{id}', ['uses'=> '\App\Http\Controllers\TransactionsController@rate']);
     Route::get('/myaccount', ['uses'=> '\App\Http\Controllers\AuthController@myAccount']);
     Route::patch('/myaccount', ['uses'=> '\App\Http\Controllers\AuthController@update']);

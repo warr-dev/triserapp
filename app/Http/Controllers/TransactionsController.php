@@ -19,20 +19,26 @@ class TransactionsController extends Controller
     
     public function store(Request $request)
     {
+        $nextid=Transactions::getnextdriver($request->passengers_count);
+        //return response(['sdas'=>Transactions::getnextdriver($request->passengers_count)]);
         $validatedData = $request->validate([
             'pickup' => 'required|string|max:255',
-            'passengers_count' => '',
+            'passengers_count' => 'required|numeric',
             'notes' => '',
+            'displayname'=>''
         ]);
+        $displayname=$request->displayname?1:0;
         $book=new Transactions(
             array_merge(
                 $validatedData,
                 [
                     'user_id'=>auth('sanctum')->user()->id,
                     'status' => 'for pickup',
+                    'displayname'=>$displayname
                 ]
             ));
         $book->save();
+        $book->drivers()->sync($nextid);
         return \response(['msg'=>'Applied for service successful','status'=>'success']);
     }
     public function assign(Request $request,Transactions $id)
@@ -45,10 +51,11 @@ class TransactionsController extends Controller
             $drivers=$drivers->orWhere('id',$req);
         }
         $drivers=$drivers->get();
+        $name=$id->displayname==1?'Name: '.$id->client->profile->name:'';
         $drivermsg=
 'New Client!!!
 
-Name: '.$id->client->profile->name.'
+'.$name.'
 Location :'.$id->pickup.'
 Contact Number :'.$id->client->cpnum.'
 Notes : '.$id->notes;
