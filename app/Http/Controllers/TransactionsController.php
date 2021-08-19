@@ -38,27 +38,26 @@ class TransactionsController extends Controller
                 ]
             ));
         $book->save();
+        // $book->drivers()->sync($nextid);
+        //$this->assign($book->id,$nextid);
+        // $trans=Transactions::find($id);
+        
         $book->drivers()->sync($nextid);
-        return \response(['msg'=>'Applied for service successful','status'=>'success']);
-    }
-    public function assign(Request $request,Transactions $id)
-    {
-        $id->drivers()->sync($request->input('to'));
-        $id->status='assigned';
-        $id->save();
+        $book->status='assigned';
+        $book->save();
         $drivers=Tricycle::select('*');
-        foreach($request->input('to') as $req){
+        foreach($nextid as $req){
             $drivers=$drivers->orWhere('id',$req);
         }
         $drivers=$drivers->get();
-        $name=$id->displayname==1?'Name: '.$id->client->profile->name:'';
+        $name=$book->displayname==1?'Name: '.$book->client->profile->name:'';
         $drivermsg=
 'New Client!!!
 
 '.$name.'
-Location :'.$id->pickup.'
-Contact Number :'.$id->client->cpnum.'
-Notes : '.$id->notes;
+Location :'.$book->pickup.'
+Contact Number :'.$book->client->cpnum.'
+Notes : '.$book->notes;
         
         $drivernames=$drivers->pluck('name')->toArray();
         $driverplates=$drivers->pluck('plate_no')->toArray();
@@ -71,7 +70,52 @@ Name/s : '.implode(', ',$drivernames).'
 Plate Number/s :'.implode(', ',$driverplates).'
 Contact Number/s :'.implode(', ',$drivercpnum);
         // $test=['cmsg'=>$clientmsg,'dmsg'=>$drivermsg];
-        $this->itexmo($id->client->cpnum,$clientmsg);
+        // return['cpnum'=>$book->client->cpnum,'msg'=>$clientmsg,'res'=>$this->itexmo($book->client->cpnum,$clientmsg)];
+        $this->itexmo($book->client->cpnum,$clientmsg);
+        foreach($drivers as $driver){
+            $this->itexmo($driver->cpnum,$drivermsg);
+        }
+        // return \response([
+        //     'msg'=>'driver Assigning successful',
+        //     'status'=>'success',
+        //     // 'test'=>$test
+        //     ]);
+        return \response(['msg'=>'Applied for service successful','status'=>'success']);
+    }
+    public function assign($id,$nextids)
+    {
+        $trans=Transactions::find($id);
+        
+        $trans->drivers()->sync($nextids);
+        $trans->status='assigned';
+        $trans->save();
+        $drivers=Tricycle::select('*');
+        foreach($nextids as $req){
+            $drivers=$drivers->orWhere('id',$req);
+        }
+        $drivers=$drivers->get();
+        $name=$trans->displayname==1?'Name: '.$trans->client->profile->name:'';
+        $drivermsg=
+'New Client!!!
+
+'.$name.'
+Location :'.$trans->pickup.'
+Contact Number :'.$trans->client->cpnum.'
+Notes : '.$trans->notes;
+        
+        $drivernames=$drivers->pluck('name')->toArray();
+        $driverplates=$drivers->pluck('plate_no')->toArray();
+        $drivercpnum=$drivers->pluck('cpnum')->toArray();
+
+        $clientmsg=
+'At your service for today
+
+Name/s : '.implode(', ',$drivernames).'
+Plate Number/s :'.implode(', ',$driverplates).'
+Contact Number/s :'.implode(', ',$drivercpnum);
+        // $test=['cmsg'=>$clientmsg,'dmsg'=>$drivermsg];
+        return['cpnum'=>$trans->client->cpnum,'msg'=>$clientmsg];
+        $this->itexmo($trans->client->cpnum,$clientmsg);
         foreach($drivers as $driver){
             $this->itexmo($driver->cpnum,$drivermsg);
         }
