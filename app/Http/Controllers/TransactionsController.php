@@ -51,13 +51,16 @@ class TransactionsController extends Controller
         }
         $drivers=$drivers->get();
         $name=$book->displayname==1?'Name: '.$book->client->profile->name:'';
+        $contact=$book->displayname==1?'Contact Number : '.$book->client->cpnum:'';
+
         $drivermsg=
 'New Client!!!
 
 '.$name.'
 Location :'.$book->pickup.'
-Contact Number :'.$book->client->cpnum.'
+'.$contact.'
 Notes : '.$book->notes;
+        
         
         $drivernames=$drivers->pluck('name')->toArray();
         $driverplates=$drivers->pluck('plate_no')->toArray();
@@ -95,12 +98,14 @@ Contact Number/s :'.implode(', ',$drivercpnum);
         }
         $drivers=$drivers->get();
         $name=$trans->displayname==1?'Name: '.$trans->client->profile->name:'';
+        $contact=$trans->displayname==1?'Contact Number : '.$trans->client->cpnum:'';
+
         $drivermsg=
 'New Client!!!
 
 '.$name.'
 Location :'.$trans->pickup.'
-Contact Number :'.$trans->client->cpnum.'
+'.$contact.'
 Notes : '.$trans->notes;
         
         $drivernames=$drivers->pluck('name')->toArray();

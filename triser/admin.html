@@ -700,15 +700,11 @@
           $('#drcpnum').val(result.driver.cpnum)
           if(result.driver.status=='banned'){
             $('#ban').html('Un-ban Driver')
-            $('#ban').click((e)=>{
-              unbandriver();
-            })
+            $('#ban').unbind().click(unbandriver())
           }
           else{
             $('#ban').html('Ban Driver')
-            $('#ban').click((e)=>{
-              unbandriver();
-            })
+            $('#ban').unbind().click(bandriver())
           }
         },
       })
