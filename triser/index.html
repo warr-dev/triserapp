@@ -924,6 +924,7 @@
             console.log(res)
             toast(res.msg)
             transactions();
+            clr();
             fn.hideDialog('mark-as-done')
           },
           error:(res)=>{
@@ -966,6 +967,7 @@
           }
         })
       }
+      setInterval(()=>transactions(),5000);
       function clr(){
         $(':input').val('');
       }
