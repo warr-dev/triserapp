@@ -20,6 +20,7 @@ class CreateTricycleTable extends Migration
             $table->string('plate_no');
             $table->string('cpnum');
             $table->string('status')->default('active');
+            $table->string('reason')->nullable();
             $table->timestamps();
         });
     }

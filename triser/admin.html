@@ -533,6 +533,20 @@
       </ons-modal>
 
 
+      <ons-modal id="banning">
+        <div style="text-align: center; background-color:white;padding:1rem 0;color:black;">
+          <h2>Ban Driver</h2>
+            <p>
+              <textarea id="reason" style="width:50%;margin:3rem auto" name="reason" placeholder="Justify your banning"></textarea>
+            </p>
+            <p>
+            <ons-button
+            class="inp but" onclick="bandriver()" >Ban</ons-button>
+            <ons-button
+            class="inp but" onclick="fn.hideDialog('assign')" >Cancel</ons-button>
+            </p>
+        </div>
+    </ons-modal>
 
       
       <style>
@@ -704,7 +718,7 @@
           }
           else{
             $('#ban').html('Ban Driver')
-            $('#ban').unbind().click(bandriver)
+            $('#ban').unbind().click(()=>fn.showDialog('banning'))
           }
         },
       })
@@ -951,11 +965,13 @@
         ajaxreq({
           url: "/api/driver/"+driverid+"/ban",
           type:'patch',
+          data:{reason:$('#reason').val()},
           success: function(res){
             console.log(res)
             if(res.status=='success'){
               toast(res.msg);
-              fn.hideDialog('viewdriver')
+              fn.hideDialog('banning');
+              fn.hideDialog('viewdriver');
               driverlist()
             }
           },

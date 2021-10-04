@@ -12,7 +12,7 @@ class Tricycle extends Model
 
 
     protected $fillable=[
-        'user_id','name','plate_no','cpnum','status'
+        'user_id','name','plate_no','cpnum','status','reason'
     ];
 
     public function user()

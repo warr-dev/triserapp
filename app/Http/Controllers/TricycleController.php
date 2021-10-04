@@ -56,9 +56,14 @@ class TricycleController extends Controller
             'status'=>'success',
         ]);
     }
-    public function bandriver(Tricycle $id)
+    public function bandriver(Request $request,Tricycle $id)
     {
-        $id->update(['status'=>'banned']);
+        $id->update(['status'=>'banned','reason'=>$request->reason]);
+        $msg='
+You have been banned to the terminal
+
+Reason : '.$request->reason;
+        $this->itexmo($id->cpnum,$msg);
         return \response([
             'msg'=>'Tricycle driver Banned!',
             'status'=>'success',
@@ -68,10 +73,39 @@ class TricycleController extends Controller
     public function unbandriver(Tricycle $id)
     {
         $id->update(['status'=>'active']);
+        $msg='You have been unbanned to the terminal';
+        $this->itexmo($id->cpnum,$msg);
         return \response([
             'msg'=>'Tricycle driver Un-Banned!',
             'status'=>'success',
-            'driver'=>$id
+            'driver'=>$idd
         ]);
+    }
+    
+
+     
+    //##########################################################################
+    // ITEXMO SEND SMS API - PHP - CURL-LESS METHOD
+    // Visit www.itexmo.com/developers.php for more info about this API
+    //##########################################################################
+    function itexmo($number,$message){
+        $apicode=config('app.apiCode');
+        $passwd=config('app.apiPass');
+        $url = 'https://www.itexmo.com/php_api/api.php';
+        $itexmo = array(
+            '1' => $number, 
+            '2' => $message.'
+', 
+            '3' => $apicode, 
+            'passwd' => $passwd);
+        $param = array(
+            'http' => array(
+                'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+                'method'  => 'POST',
+                'content' => http_build_query($itexmo),
+            ),
+        );
+        $context  = stream_context_create($param);
+        return file_get_contents($url, false, $context);
     }
 }

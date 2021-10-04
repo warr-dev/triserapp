@@ -38,22 +38,43 @@ class Transactions extends Model
         if($counter%2!=0) $count++;
         $lastid=Tricycle::where('status','active')->orderBy('id','desc')->first()->id;
         $lasttrans=Transactions::orderBy('id','desc')->first()->id??0;
+
+        $returned=Tricycle::where('status','active');
+        if(in_array(date('N'),[1,3,5,7]))
+            $returned=$returned->where(function ($query){
+                for($i=0;$i<9;$i++)
+                    if($i%2==1)
+                        $query=$query->orWhere(function ($query) use ($i){
+                            $query->whereRaw("SUBSTR(tricycle.plate_no, -1) ='$i'");
+                        });
+                return $query;
+            });
+        if(in_array(date('N'),[2,4,6]))
+            $returned=$returned->where(function ($query){
+                for($i=0;$i<9;$i++)
+                    if($i%2==0)
+                        $query=$query->orWhere(function ($query) use ($i){
+                            $query->whereRaw("SUBSTR(tricycle.plate_no, -1) ='$i'");
+                        });
+                return $query;
+            });
         if($lasttrans==0)
-            return Tricycle::where('status','active')->take($count)->get()->pluck('id')->toArray();
+            return $returned->take($count)->get()->pluck('id')->toArray();
         $trans=Transactions::orderBy('service.id','desc')->join('driver_service','service.id','driver_service.transaction_id')->where('driver_service.transaction_id',$lasttrans)->get()->pluck('driver_id')->toArray();
         
         if(!$trans)
-            return Tricycle::where('status','active')->take($count)->get()->pluck('id')->toArray();
+            return $returned->take($count)->get()->pluck('id')->toArray();
         if(sizeof($trans)==0)
-            return Tricycle::where('status','active')->take($count)->get()->pluck('id')->toArray();
+            return $returned->take($count)->get()->pluck('id')->toArray();
         else{
             $max=max($trans);
             if($lastid==$max)
-                return Tricycle::where('status','active')->orderBy('id','asc')->take($count)->get()->pluck('id')->toArray();
-            $ids=Tricycle::where('id','>',$max)->where('status','active')->orderBy('id','asc')->take($count)->get()->pluck('id')->toArray();
+                return $returned->orderBy('id','asc')->take($count)->get()->pluck('id')->toArray();
+            // $ids=Tricycle::where('id','>',$max)->where('status','active')->orderBy('id','asc')->take($count)->get()->pluck('id')->toArray();
+            $ids=$returned->where('id','>',$max)->orderBy('id','asc')->take($count)->get()->pluck('id')->toArray();
             $ctr=sizeof($ids);
             if($ctr<$count){
-                $ids=array_merge($ids,Tricycle::where('status','active')->orderBy('id','asc')->take($count-$ctr)->get()->pluck('id')->toArray());
+                $ids=array_merge($ids,$returned->orderBy('id','asc')->take($count-$ctr)->get()->pluck('id')->toArray());
             }
             return $ids;
         }
