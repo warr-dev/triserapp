@@ -10,6 +10,28 @@ class TricycleController extends Controller
 {
     public function index()
     {
+        if(auth('sanctum')->user()->id!=1){
+            $drivers=Tricycle::select('*');
+            if(in_array(date('N'),[1,3,5,7]))
+            $drivers=$drivers->where(function ($query){
+                for($i=0;$i<9;$i++)
+                    if($i%2==1)
+                        $query=$query->orWhere(function ($query) use ($i){
+                            $query->whereRaw("SUBSTR(tricycle.plate_no, -1) ='$i'");
+                        });
+                return $query;
+            });
+            if(in_array(date('N'),[2,4,6]))
+                $drivers=$drivers->where(function ($query){
+                    for($i=0;$i<9;$i++)
+                        if($i%2==0)
+                            $query=$query->orWhere(function ($query) use ($i){
+                                $query->whereRaw("SUBSTR(tricycle.plate_no, -1) ='$i'");
+                            });
+                    return $query;
+                });
+            return \response(['drivers'=>$drivers->get()]);
+        }
         return \response(['drivers'=>Tricycle::all()]);
     }
     public function create(Request $request)
