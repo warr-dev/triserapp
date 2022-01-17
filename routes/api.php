@@ -42,4 +42,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::patch('/rateservice/{id}', ['uses'=> '\App\Http\Controllers\TransactionsController@rate']);
     Route::get('/myaccount', ['uses'=> '\App\Http\Controllers\AuthController@myAccount']);
     Route::patch('/myaccount', ['uses'=> '\App\Http\Controllers\AuthController@update']);
+    Route::get('/getlastlocation', ['uses'=> '\App\Http\Controllers\TransactionsController@getlastlocation']);
 });

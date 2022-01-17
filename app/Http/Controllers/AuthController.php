@@ -35,7 +35,8 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
+            'fname' => 'required|string|max:255',
+            'lname' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users',
             'cpnum' => 'required|digits:11',
             'email' => 'required|email',
@@ -51,7 +52,8 @@ class AuthController extends Controller
             ]);
             if($user)
                 Profile::create([
-                    'name' => $validatedData['name'],
+                    'fname' => $validatedData['fname'],
+                    'lname' => $validatedData['lname'],
                     'user_id' => $user->id,
                 ]);
         $ms="Triser: your code is ".$user->code;
@@ -119,7 +121,7 @@ class AuthController extends Controller
             $data['password']=$request->input('password');
         $user->update($data);
         if($user->acctype!='admin')
-            $user->profile->first()->update(['name'=>$request->input('name')]);
+            $user->profile->update(['fname'=>$request->input('fname'),'lname'=>$request->input('lname')]);
         return \response([
             'status'=>'successful',
             'msg'=> "Profile Updated Successfully",

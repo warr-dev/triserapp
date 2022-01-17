@@ -144,6 +144,11 @@ Contact Number/s :'.implode(', ',$drivercpnum);
         $id->save();
         return \response(['msg'=>'Transaction marked as done','status'=>'success']);
     }
+    public function getlastlocation()
+    {
+        $user=auth('sanctum')->user();
+        return response(['status'=>'success','location'=>$user->getlastlocation()]);
+    }
     
 //     public function test()
 //     {
