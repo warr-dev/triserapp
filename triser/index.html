@@ -318,6 +318,10 @@
               <ons-button
               class="inp but" onclick="verify()" >Done</ons-button>
               </p>
+              <p>
+              <ons-button
+              class="inp but" onclick="fn.hideDialog('code')" >Close</ons-button>
+              </p>
           </div>
       </form>
       </ons-modal>
@@ -401,6 +405,18 @@
                             </p>
                         
                         <p>
+                          <p>
+                              <ons-input
+                              class="inp"
+                                name="mname"
+                                  placeholder="Middle Name"
+                                  type="text"
+                                  modifier="underbar"
+                              >
+                              </ons-input>
+                              </p>
+                          
+                          <p>
                           <p>
                               <ons-input
                               class="inp"
@@ -537,6 +553,18 @@
                     name="fname"
                     id="fname"
                       placeholder="First Name"
+                      type="text"
+                      modifier="underbar"
+                  >
+                  </ons-input>
+                  </p>
+                  
+                <p>
+                  <ons-input
+                  class="inp"
+                    name="mname"
+                    id="mname"
+                      placeholder="Middle Name"
                       type="text"
                       modifier="underbar"
                   >
@@ -967,6 +995,7 @@
             console.log(res)
             if(res.status=='successful'){
               $('#fname').val(res.profile.fname??'N/A')
+              $('#mname').val(res.profile.mname??'N/A')
               $('#lname').val(res.profile.lname??'N/A')
               $('#edcpnum').val(res.user.cpnum)
               $('#edemail').val(res.user.email)

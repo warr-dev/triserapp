@@ -15,7 +15,8 @@ class AlterProfileNormalizeName extends Migration
     {
         Schema::table('profile', function (Blueprint $table) {
             $table->renameColumn('name','fname');
-            $table->string('lname')->after('name');
+            $table->string('mname')->after('name');
+            $table->string('lname')->after('mname')->nullable();
         });
     }
 
@@ -28,7 +29,7 @@ class AlterProfileNormalizeName extends Migration
     {
         Schema::table('profile', function (Blueprint $table) {
             $table->renameColumn('fname','name');
-            $table->dropColumn('lname');
+            $table->dropColumn(['mname','lname']);
         });
     }
 }

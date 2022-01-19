@@ -36,6 +36,7 @@ class AuthController extends Controller
     {
         $validatedData = $request->validate([
             'fname' => 'required|string|max:255',
+            'mname' => 'required|string|max:255',
             'lname' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users',
             'cpnum' => 'required|digits:11',
@@ -53,11 +54,12 @@ class AuthController extends Controller
             if($user)
                 Profile::create([
                     'fname' => $validatedData['fname'],
+                    'mname' => $validatedData['mname'],
                     'lname' => $validatedData['lname'],
                     'user_id' => $user->id,
                 ]);
         $ms="Triser: your code is ".$user->code;
-        $this->itexmo($user->cpnum,$ms);
+        $asd=$this->itexmo($user->cpnum,$ms);
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
@@ -68,6 +70,9 @@ class AuthController extends Controller
         // ]);
         return response()->json([
             'status' => 'success',
+            // 'asd' => $asd,
+            // 'cpnum' => $user->cpnum,
+            // 'ms' => $ms,
             'msg' => 'Please Confirm with Verification code',
         ]);
     }
@@ -121,7 +126,11 @@ class AuthController extends Controller
             $data['password']=$request->input('password');
         $user->update($data);
         if($user->acctype!='admin')
-            $user->profile->update(['fname'=>$request->input('fname'),'lname'=>$request->input('lname')]);
+            $user->profile->update([
+                'fname'=>$request->input('fname'),
+                'mname'=>$request->input('mname'),
+                'lname'=>$request->input('lname')
+                ]);
         return \response([
             'status'=>'successful',
             'msg'=> "Profile Updated Successfully",
