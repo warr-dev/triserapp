@@ -10,7 +10,7 @@ class TricycleController extends Controller
 {
     public function index()
     {
-        if(auth('sanctum')->user()->id!=1){
+        if(auth('sanctum')->user()?->id!=1){
             $drivers=Tricycle::select('*');
             if(in_array(date('N'),[1,3,5,7]))
             $drivers=$drivers->where(function ($query){
