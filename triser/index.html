@@ -753,7 +753,7 @@
         res.responseJSON.errors &&
           Object.entries(res.responseJSON.errors).map(([name, val]) => {
             ons.notification.toast(String(val), { timeout: 1000, animation: 'fall' })
-            console.log('[name=' + val + ']')
+            console.log('['+name+'=' + val + ']')
             //$('[name='+name+']').css({'color':'red'})
           })
       }
@@ -781,7 +781,10 @@
         },
         error: (e) => {
           showinputerrors(e)
-          toast(e.responseJSON.msg)
+          toast(e.responseJSON.message)
+          if(e.responseJSON?.errors?.shouldValidate){
+            fn.showDialog('code')
+          }
         }
       });
     }
