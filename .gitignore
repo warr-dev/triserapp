@@ -13,3 +13,5 @@ npm-debug.log
 yarn-error.log
 *.zip
 composer.lock
+.devcontainer/data/*
+.devcontainer/ssh/*
