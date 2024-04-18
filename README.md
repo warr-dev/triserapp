@@ -32,6 +32,7 @@ This can be run using
 - mysql
 - composer
 ### Running
+open vscode terminal inside container 
 - `./startup.sh`
 
 ---
